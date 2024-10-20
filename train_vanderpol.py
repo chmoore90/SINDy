@@ -1,9 +1,6 @@
 import matplotlib.pyplot as plt
-# from mpl_toolkits.mplot3d import Axes3D
-# from matplotlib.cm import rainbow
 import numpy as np
 from scipy.integrate import solve_ivp
-# from scipy.io import loadmat
 from pysindy.utils import van_der_pol
 
 import pysindy as ps
