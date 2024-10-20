@@ -39,13 +39,14 @@ model = ps.SINDy(
     feature_library=ps.PolynomialLibrary(degree=poly_order),
 )
 model.fit(x_train, t=dt)
+print("Van der Pol model:")
 model.print()
 
 
 # Simulate and plot the results
 
 x_sim = model.simulate(x0_train, t_train)
-plot_kws = dict(linewidth=2.5)
+plot_kws = dict(linewidth=1)
 
 fig, axs = plt.subplots(1, 2, figsize=(10, 4))
 axs[0].plot(t_train, x_train[:, 0], "r", label="$x_0$", **plot_kws)
