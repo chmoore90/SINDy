@@ -1,12 +1,10 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.cm import rainbow
+# from mpl_toolkits.mplot3d import Axes3D
+# from matplotlib.cm import rainbow
 import numpy as np
 from scipy.integrate import solve_ivp
-from scipy.io import loadmat
+# from scipy.io import loadmat
 from pysindy.utils import linear_damped_SHO
-from pysindy.utils import cubic_damped_SHO
-from pysindy.utils import van_der_pol
 
 import pysindy as ps
 
@@ -22,18 +20,20 @@ integrator_keywords['rtol'] = 1e-12
 integrator_keywords['method'] = 'LSODA'
 integrator_keywords['atol'] = 1e-12
 
-# Generate training data
+# function
+def linear_func(t, x):
+    return [-0.36 * x[0] + 25 * x[1], -25 * x[0] - 0.36 * x[1]]
 
+# Generate training data
 dt = 0.01
-t_train = np.arange(0, 30, dt)
+t_train = np.arange(0, 10, dt)
 t_train_span = (t_train[0], t_train[-1])
-x0_train = [0, 0.1]
-x_train = solve_ivp(van_der_pol, t_train_span,
+x0_train = [2, 0]
+x_train = solve_ivp(linear_func, t_train_span,
                     x0_train, t_eval=t_train, **integrator_keywords).y.T
 
 # Fit the model
-
-poly_order = 4
+poly_order = 5
 threshold = 0.05
 
 model = ps.SINDy(
@@ -41,14 +41,14 @@ model = ps.SINDy(
     feature_library=ps.PolynomialLibrary(degree=poly_order),
 )
 model.fit(x_train, t=dt)
-print("Van der Pol model:")
+print("Linear model:")
 model.print()
 
 
 # Simulate and plot the results
 
 x_sim = model.simulate(x0_train, t_train)
-plot_kws = dict(linewidth=2.5)
+plot_kws = dict(linewidth=1)
 
 fig, axs = plt.subplots(1, 2, figsize=(10, 4))
 axs[0].plot(t_train, x_train[:, 0], "r", label="$x_0$", **plot_kws)
