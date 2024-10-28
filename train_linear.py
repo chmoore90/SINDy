@@ -9,6 +9,7 @@ import pysindy as ps
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
+
 np.random.seed(1000)  # Seed for reproducibility
 
 # Integrator keywords for solve_ivp
@@ -17,20 +18,29 @@ integrator_keywords['rtol'] = 1e-12
 integrator_keywords['method'] = 'LSODA'
 integrator_keywords['atol'] = 1e-12
 
-# function
-def linear_func(t, x):
-    return [-0.36 * x[0] + 25 * x[1], -25 * x[0] - 0.36 * x[1]]
+# functions
+a = 0.36
+b = 100
+c = 5**2
+
+def linear_func(t, x, p=[a, c]):
+    return [-p[0] * x[0] + p[1] * x[1], -p[1] * x[0] - p[0] * x[1]]
+
+def vanderpol_func(t, x, p=[a, b, c]):
+    return [x[1], x[1] * (p[0] - p[1] * x[0] ** 2) - p[2] * x[0]]
 
 # Generate training data
+function = vanderpol_func
+
 dt = 0.01
-t_train = np.arange(0, 10, dt)
+t_train = np.arange(0, 25, dt)
 t_train_span = (t_train[0], t_train[-1])
 x0_train = [2, 0]
-x_train = solve_ivp(linear_func, t_train_span,
+x_train = solve_ivp(function, t_train_span,
                     x0_train, t_eval=t_train, **integrator_keywords).y.T
 
 # Fit the model
-poly_order = 5
+poly_order = 2
 threshold = 0.05
 
 model = ps.SINDy(
@@ -38,7 +48,10 @@ model = ps.SINDy(
     feature_library=ps.PolynomialLibrary(degree=poly_order),
 )
 model.fit(x_train, t=dt)
-print("Linear model:")
+if function == linear_func:
+    print("Linear model:")
+elif function == vanderpol_func:
+    print("Van der Pol model:")
 model.print()
 
 
