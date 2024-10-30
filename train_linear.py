@@ -23,8 +23,11 @@ a = 0.36
 b = 100
 c = 5**2
 
+#def linear_func_pos(t, x, p=[a, c]):
+ #   return [-p[0] * x[0] + p[1] * x[1], -p[1] * x[0] - p[0] * x[1]]
+
 def linear_func(t, x, p=[a, c]):
-    return [-p[0] * x[0] + p[1] * x[1], -p[1] * x[0] - p[0] * x[1]]
+    return [x[1], p[0] * x[1] - p[1] * x[0]]
 
 def vanderpol_func(t, x, p=[a, b, c]):
     return [x[1], x[1] * (p[0] - p[1] * x[0] ** 2) - p[2] * x[0]]
