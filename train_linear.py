@@ -20,7 +20,7 @@ integrator_keywords['atol'] = 1e-12
 
 # functions
 a = 0.36
-b = 100
+b = -100
 c = 5**2
 
 #def linear_func_pos(t, x, p=[a, c]):
@@ -30,7 +30,7 @@ def linear_func(t, x, p=[a, c]):
     return [x[1], p[0] * x[1] - p[1] * x[0]]
 
 def vanderpol_func(t, x, p=[a, b, c]):
-    return [x[1], x[1] * (p[0] - p[1] * x[0] ** 2) - p[2] * x[0]]
+    return [x[1], x[1] * (p[0] + p[1] * x[0] ** 2) - p[2] * x[0]]
 
 # Generate training data
 function = vanderpol_func
